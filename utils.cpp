@@ -4,6 +4,7 @@
 #include <numeric>
 #include <ctime>
 #include <chrono>
+#include <omp.h>
 
 #define INF 1000
 

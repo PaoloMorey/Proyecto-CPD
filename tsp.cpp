@@ -6,11 +6,17 @@ private:
     number cost{};
 
     static matrix fill_with_inf(matrix matrix, int prev, int curr, int start) {
-        for (int i = 0; i < matrix.size(); ++i) {
+        int i;
+        #pragma omp parallel
+        {
+        #pragma omp for private(i)
+        for (i = 0; i < matrix.size(); ++i) {
             matrix[prev][i] = INF;
             matrix[i][curr] = INF;
         }
+        #pragma omp single
         matrix[curr][start] = INF;
+        }
         return matrix;
     }
 
