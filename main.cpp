@@ -5,7 +5,7 @@ int main() {
     A.run();
     auto adj = A.get_adj();
     auto districts = A.get_cities();
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = omp_get_wtime();
     vector best_path;
     number best_cost = INF;
     std::vector<std::pair<vector, number>> best_pc;
@@ -25,10 +25,10 @@ int main() {
         }
     }
 
-    auto finish = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = finish - start;
+    auto finish = omp_get_wtime();
+    auto elapsed = finish - start;
     std::cout << "\n"
-              << "Elapsed time: " << elapsed.count() << " s\n";
+              << "Elapsed time: " << elapsed << " s\n";
     for (int i : best_path) std::cout << districts[i] << "\t";
     std::cout << "\nMinimum distance:  " << best_cost << "\n";
     return 0;
