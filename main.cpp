@@ -1,6 +1,6 @@
 #include "menu.cpp"
 
-int main() {   
+int main() {
     menu A;
     A.run();
     auto adj = A.get_adj();
@@ -8,7 +8,7 @@ int main() {
     auto start = std::chrono::high_resolution_clock::now();
     vector best_path;
     number best_cost = INF;
-    for (int j = 0; j < adj.size(); ++j) {
+    for (int j = 0; j < 1; ++j) {
         TSP a;
         a.run(adj, j);
 
@@ -20,7 +20,8 @@ int main() {
     }
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = finish - start;
-    std::cout << "Elapsed time: " << elapsed.count() << " s\n";
+    std::cout << "\n"
+              << "Elapsed time: " << elapsed.count() << " s\n";
     for (int i : best_path) std::cout << districts[i] << "\t";
     std::cout << "\nMinimum distance:  " << best_cost << "\n";
     return 0;

@@ -7,12 +7,16 @@ struct TSP {
 
     static matrix fill_with_inf(matrix matrix, int prev, int curr, int start) {
         int i;
-        for (i = 0; i < matrix.size(); ++i) {
-            matrix[prev][i] = INF;
-            matrix[i][curr] = INF;
+#pragma omp parallel
+        {
+#pragma omp for private(i)
+            for (i = 0; i < matrix.size(); ++i) {
+                matrix[prev][i] = INF;
+                matrix[i][curr] = INF;
+            }
+#pragma omp single
+            matrix[curr][start] = INF;
         }
-        matrix[curr][start] = INF;
-
         return matrix;
     }
 
@@ -57,34 +61,19 @@ struct TSP {
         auto reduced = reduced_matrix(adj);
         while (path.size() != adj.size()) {
             std::vector<std::pair<matrix, number>> candidates;
-            int j = 0;
-            // std::cout << "a";
-
-#pragma omp parallel for private(j) shared(reduced)
-            for (j = 0; j < vertexes.size(); j++) {
-                // std::cout << omp_get_thread_num();
-                auto new_reduced = fill_with_inf(reduced.first, path.back(), vertexes[j], start);
+            for (auto vertex : vertexes) {
+                auto new_reduced = fill_with_inf(reduced.first, path.back(), vertex, start);
                 auto new_reduced_pair = reduced_matrix(new_reduced);
-                new_reduced_pair.second = reduced.first[path.back()][vertexes[j]] + reduced.second + new_reduced_pair.second;
-#pragma omp critical
+                new_reduced_pair.second = reduced.first[path.back()][vertex] + reduced.second + new_reduced_pair.second;
                 candidates.push_back(new_reduced_pair);
             }
             int i = 0;
-            // std::cout << "c: " << candidates.size();
-            // print candidates
-            for (auto c : candidates)
-                std::cout << c.second << " ";
-            std::cout << "\n";
             reduced = find_new_reduced_pair(candidates, i);
-            std::cout << "i: " << i << "\n";
             path.push_back(vertexes[i]);
             vertexes.erase(vertexes.begin() + i);
-
-            // path.push_back(vertexes[0]);
         }
         path.push_back(start);
         this->cost = reduced.second;
-        std::cout << "TC: " << this->cost << "\n";
     }
 
     vector get_path() {
