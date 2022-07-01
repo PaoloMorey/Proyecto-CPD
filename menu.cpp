@@ -28,11 +28,11 @@ struct menu {
                 {6.5, 2.8, 8.3, 9.4, 9.3, 18, 14.6, INF, 8.8, 4.7},
                 {6.9, 5.2, 7.1, 9.8, 9.9, 19, 17.3, 8.8, INF, 9.5},
                 {10.3, 6, 9, 10.1, 13.1, 27.9, 9.3, 4.7, 9.5, INF}};
-            adj = {{INF, 20, 30, 10, 11},
+            /*adj = {{INF, 20, 30, 10, 11},
                    {15, INF, 16, 4, 2},
                    {3, 5, INF, 2, 4},
                    {19, 6, 18, INF, 3},
-                   {16, 4, 7, 16, INF}};
+                   {16, 4, 7, 16, INF}};*/
             cities = {"Cercado", "Lince", "Miraflores", "Barranco", "Rimac", "Los Olivos",
                       "La Molina", "La Victoria", "Magdalena", "San Borja"};
             return;
