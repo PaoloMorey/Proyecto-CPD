@@ -52,7 +52,10 @@ struct menu {
             std::cin >> city;
             cities.push_back(city);
         }
-        for (int i = 0; i < N; ++i) {
+        std::cout<<"Insertar pesos: ";
+        std::cin>>city;
+        if (city == "Y"){
+           for (int i = 0; i < N; ++i) {
             for (int j = i; j < N; ++j) {
                 if (i == j)
                     adj[i][j] = INF;
@@ -63,6 +66,9 @@ struct menu {
                 }
             }
         }
+        return;
+        }
+        // MATRIZ USANDO LAS CIUDADES
     }
 
     matrix get_adj() {
