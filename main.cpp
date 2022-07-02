@@ -17,7 +17,6 @@ int main() {
 #pragma omp critical
         best_pc.push_back({a.get_path(), a.get_cost()});
     }
-    // find minimum in best_pc
     for (auto &i : best_pc) {
         if (i.second < best_cost) {
             best_cost = i.second;

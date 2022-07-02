@@ -57,7 +57,7 @@ struct TSP {
         while (path.size() != adj.size()) {
             std::vector<std::pair<int, std::pair<matrix, number>>> candidates;
             int j = 0;
-#pragma omp parallel for private(j) shared(reduced) schedule(dynamic)
+#pragma omp parallel for private(j) shared(reduced)
             for (j = 0; j < vertexes.size(); j++) {
                 auto new_reduced = fill_with_inf(reduced.second.first, path.back(), vertexes[j], start);
                 auto new_reduced_pair = reduced_matrix(new_reduced, vertexes[j]);
