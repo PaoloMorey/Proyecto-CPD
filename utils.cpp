@@ -6,13 +6,19 @@
 #include <chrono>
 #include <omp.h>
 
-#define INF 1000
+#define INF 10e6
 
 using number = double;
 using matrix = std::vector<std::vector<number>>;
 using vector = std::vector<int>;
 
 struct utils {
+
+    static double cpu_time() {
+        double value;
+        value = (double)clock() / (double)CLOCKS_PER_SEC;
+        return value;
+    }
 
     static double calc_inf(double a, double b, char op = '-') {
         if (a == INF || b == INF) return INF;
