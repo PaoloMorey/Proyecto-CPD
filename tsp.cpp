@@ -102,6 +102,7 @@ struct TSP {
         std::vector<int> vertexes_path;
         auto reduced = reduced_matrix(adj, start, vertexes_path);
         fill_path(reduced, vertexes);
+        this->path.push_back(start);
     }
 
     vector get_path() {
