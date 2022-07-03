@@ -4,8 +4,12 @@ struct TSP {
    private:
     vector path{};
     number cost{};
+    matrix adj{};
+    int start{};
+    std::vector<int> copy_vertex{};
+    std::vector<pq> give_me_a_name{};
 
-    static matrix fill_with_inf(matrix matrix, int prev, int curr, int start) {
+    matrix fill_with_inf(matrix matrix, int prev, int curr) {
         int i;
         for (i = 0; i < matrix.size(); ++i) {
             matrix[prev][i] = INF;
@@ -16,20 +20,44 @@ struct TSP {
         return matrix;
     }
 
-    static std::pair<int, std::pair<matrix, number>>
-    find_new_reduced_pair(const std::vector<std::pair<int, std::pair<matrix, number>>> &candidates) {
-        std::pair<int, std::pair<matrix, number>> new_reduced_pair = candidates[0];
-        for (int j = 0; j < candidates.size(); ++j) {
-            if (candidates[j].second.second < new_reduced_pair.second.second) {
-                new_reduced_pair = candidates[j];
-            }
-        }
-        return {new_reduced_pair};
+    pair find_new_reduced_pair(pq &candidates) {
+        auto ans = candidates.top();
+        candidates.pop();
+        give_me_a_name.push_back(candidates);
+        return ans;
     }
 
-    static std::pair<int, std::pair<matrix, number>> reduced_matrix(const matrix &original, int vertex) {
+    void check_upper() {
+        for (int i = give_me_a_name.size() - 1; i >= 0; --i) {
+            if (!give_me_a_name[i].empty()) {
+                if (give_me_a_name[i].top().second.second < cost) {
+                    auto temp = give_me_a_name[i].top();
+                    give_me_a_name[i].pop();
+                    give_me_a_name.resize(i + 1);
+                    fill_path(temp, utils::func(copy_vertex, temp.first));
+                }
+            }
+        }
+    }
+
+    pq find_candidates(vector vertexes, pair reduced) {
+        pq candidates;
+        int j;
+#pragma omp parallel for private(j) shared(reduced)
+        for (j = 0; j < vertexes.size(); j++) {
+            auto new_reduced = fill_with_inf(reduced.second.first, reduced.first.back(), vertexes[j]);
+            auto new_reduced_pair = reduced_matrix(new_reduced, vertexes[j], reduced.first);
+            new_reduced_pair.second.second = reduced.second.first[reduced.first.back()][vertexes[j]] + reduced.second.second + new_reduced_pair.second.second;
+#pragma omp critical
+            candidates.push(new_reduced_pair);
+        }
+        return candidates;
+    }
+
+    static pair reduced_matrix(const matrix &original, int vertex, std::vector<int> vertexes_path) {
         number min, cost = 0;
         matrix reduced = original;
+        vertexes_path.push_back(vertex);
         for (auto &i : reduced) {
             min = *min_element(i.begin(), i.end());
             for (double &j : i) j = utils::calc_inf(j, min);
@@ -42,35 +70,38 @@ struct TSP {
             for (auto &i : reduced) i[j] = utils::calc_inf(i[j], min);
             if (min != INF) cost += min;
         }
-        return {vertex, {reduced, cost}};
+        return {vertexes_path, {reduced, cost}};
+    }
+
+    void fill_path(pair reduced, std::vector<int> vertexes) {
+        auto i = reduced.first.size();
+        while (i != adj.size()) {
+            auto candidates = find_candidates(vertexes, reduced);
+            reduced = find_new_reduced_pair(candidates);
+            vertexes.erase(std::find(vertexes.begin(), vertexes.end(), reduced.first[reduced.first.size() - 1]));
+            i++;
+        }
+        if (reduced.second.second < this->cost) {
+            this->cost = reduced.second.second;
+            this->path = reduced.first;
+        }
+        check_upper();
     }
 
    public:
     TSP() = default;
 
     void run(const matrix &adj, int start = 0) {
+        this->adj = adj;
+        this->start = start;
+        this->cost = INF;
         std::vector<int> vertexes(adj.size());
         std::iota(std::begin(vertexes), std::end(vertexes), 0);
-        path.push_back(start);
+        copy_vertex = vertexes;
         vertexes.erase(std::find(vertexes.begin(), vertexes.end(), start));
-        auto reduced = reduced_matrix(adj, start);
-        while (path.size() != adj.size()) {
-            std::vector<std::pair<int, std::pair<matrix, number>>> candidates;
-            int j = 0;
-#pragma omp parallel for private(j) shared(reduced)
-            for (j = 0; j < vertexes.size(); j++) {
-                auto new_reduced = fill_with_inf(reduced.second.first, path.back(), vertexes[j], start);
-                auto new_reduced_pair = reduced_matrix(new_reduced, vertexes[j]);
-                new_reduced_pair.second.second = reduced.second.first[path.back()][vertexes[j]] + reduced.second.second + new_reduced_pair.second.second;
-#pragma omp critical
-                candidates.push_back(new_reduced_pair);
-            }
-            reduced = find_new_reduced_pair(candidates);
-            path.push_back(reduced.first);
-            vertexes.erase(std::find(vertexes.begin(), vertexes.end(), reduced.first));
-        }
-        path.push_back(start);
-        this->cost = reduced.second.second;
+        std::vector<int> vertexes_path;
+        auto reduced = reduced_matrix(adj, start, vertexes_path);
+        fill_path(reduced, vertexes);
     }
 
     vector get_path() {
