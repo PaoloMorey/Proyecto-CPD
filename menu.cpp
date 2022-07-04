@@ -8,13 +8,13 @@ struct menu {
    public:
     menu() = default;
 
-    void run(bool flag = true) {
+    void run() {
         int N;
         number distance;
         std::string city;
-        // std::cout << "¿Usar distritos de Lima?[Y/n] ";
-        // std::cin >> city;
-        if (city == "Y" || flag) {
+        std::cout << "¿Usar distritos de Lima?[Y/n] ";
+        std::cin >> city;
+        if (city == "Y" || city == "y") {
             adj = {
                 {INF, 5.3, 10, 11.8, 3.5, 12.5, 21.4, 6.5, 6.9, 10.3},
                 {5.3, INF, 4.3, 7.7, 7.7, 17.5, 13.6, 2.8, 5.2, 6},
@@ -58,22 +58,19 @@ struct menu {
             std::cin >> city;
             cities.push_back(city);
         }
-        std::cout << "¿Desea insertar distancia entre las ciudades?[Y/n]: ";
-        std::cin >> city;
-        if (city == "Y") {
-            for (int i = 0; i < N; ++i) {
-                for (int j = i; j < N; ++j) {
-                    if (i == j)
-                        adj[i][j] = INF;
-                    else {
-                        std::cout << "\nIngrese la distancia entre " << cities[i] << " a " << cities[j] << ": ";
-                        std::cin >> distance;
-                        adj[i][j] = adj[j][i] = distance;
-                    }
+
+        for (int i = 0; i < N; ++i) {
+            for (int j = i; j < N; ++j) {
+                if (i == j)
+                    adj[i][j] = INF;
+                else {
+                    std::cout << "\nIngrese la distancia entre " << cities[i] << " a " << cities[j] << ": ";
+                    std::cin >> distance;
+                    adj[i][j] = adj[j][i] = distance;
                 }
             }
-            return;
         }
+        return;
     }
 
     matrix get_adj() {

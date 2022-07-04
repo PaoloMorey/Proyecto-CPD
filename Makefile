@@ -5,7 +5,7 @@ run:
 	./tsp.out
 
 runsec:
-	g++ -fopenmp main.cpp -D sec -o tsp.out 
+	g++ main.cpp -D sec -o tsp.out 
 	./tsp.out
 
 vivopar:
