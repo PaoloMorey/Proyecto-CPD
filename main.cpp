@@ -11,8 +11,6 @@ int main() {
 #else
     auto start = utils::cpu_time();
 #endif
-    vector best_path;
-
     TSP a;
     a.run(adj);
     number best_cost = a.get_cost();
@@ -25,7 +23,20 @@ int main() {
     auto elapsed = finish - start;
     std::cout << "\n"
               << "Elapsed time: " << elapsed << " s\n";
-    // for (int i : best_path) std::cout << districts[i] << "\t";
+    auto best_path = a.get_path();
+
+    for (int z = 0; z < best_path.size(); z++) {
+        if (z == best_path.size() - 1)
+            std::cout << districts[best_path[z]] << "\n";
+        else
+            std::cout << districts[best_path[z]] << " --> ";
+    }
+    for (int z = 0; z < best_path.size(); z++) {
+        if (z == best_path.size() - 1)
+            std::cout << best_path[z] << "\n";
+        else
+            std::cout << best_path[z] << " --> ";
+    }
     std::cout << "\nMinimum distance:  " << best_cost << "\n";
     return 0;
 }
