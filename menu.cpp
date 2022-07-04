@@ -8,14 +8,14 @@ struct menu {
    public:
     menu() = default;
 
-    void run() {
+    void run(bool flag = true) {
         int N;
         number distance;
         std::string city;
-        std::cout << "¿Usar distritos de Lima?[Y/n] ";
-        std::cin >> city;
-        if (city == "Y") {
-            /*adj = {
+        // std::cout << "¿Usar distritos de Lima?[Y/n] ";
+        // std::cin >> city;
+        if (city == "Y" || flag) {
+            adj = {
                 {INF, 5.3, 10, 11.8, 3.5, 12.5, 21.4, 6.5, 6.9, 10.3},
                 {5.3, INF, 4.3, 7.7, 7.7, 17.5, 13.6, 2.8, 5.2, 6},
                 {10, 4.3, INF, 2.9, 13.9, 23.7, 16.6, 8.3, 7.1, 9},
@@ -26,8 +26,8 @@ struct menu {
                 {6.5, 2.8, 8.3, 9.4, 9.3, 18, 14.6, INF, 8.8, 4.7},
                 {6.9, 5.2, 7.1, 9.8, 9.9, 19, 17.3, 8.8, INF, 9.5},
                 {10.3, 6, 9, 10.1, 13.1, 27.9, 9.3, 4.7, 9.5, INF}};
-            cities = {"Cercado", "Lince", "Miraflores", "Barranco", "Rimac", "Los Olivos",
-                      "La Molina", "La Victoria", "Magdalena", "San Borja"};*/
+            /*cities = {"Cercado", "Lince", "Miraflores", "Barranco", "Rimac", "Los Olivos",
+                      "La Molina", "La Victoria", "Magdalena", "San Borja"};
             srand(time(NULL));
             int total = 50;
             for (int i = 0; i < total; i++)
@@ -38,7 +38,7 @@ struct menu {
                     // adj[i][j] = (rand() % 1000) + 1;
                     adj[i][j] = i + j;
                 }
-            }
+            }*/
             return;
         }
 

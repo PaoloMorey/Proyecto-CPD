@@ -29,12 +29,7 @@ while e < total_ciudades:
     "San Borja, Lima, Peru",
 ]"""
 
-# save each element in origin_list with a \n
-ol = "\n".join(origin_list)
-# save ol to file
-file = open("matrix/cities.txt", "w")
-file.write(ol)
-file.close()
+
 destination_list = origin_list
 origin_dict = {}
 destination_dict = {}
@@ -46,13 +41,11 @@ for index, value in enumerate(destination_list):
 origin = "|".join(origin_list)
 destination = "|".join(destination_list)
 
-# departure_time = str(round(dt.datetime(2022, 7, 9, 12, 30).timestamp()))
 endpoint = "https://maps.googleapis.com/maps/api/distancematrix/json"
 params = {
     "origins": origin,
     "destinations": destination,
     "mode": "driving",  # "walking","bicycling"
-    # departure_time": departure_time,
     "key": key,
 }
 url_params = urlencode(params)
@@ -64,6 +57,18 @@ response_json = json.loads(response.read())
 with open("response.json", "w") as f:
     json.dump(response_json, f)
 
+ol = list(response_json["origin_addresses"])
+# join ol with spaces
+ol = "\n".join(ol)
+file = open("matrix/cities.txt", "w")
+file.write(ol)
+file.close()
+# save each element in origin_list with a \n
+ol = "\n".join(origin_list)
+# save ol to file
+file = open("matrix/names.txt", "w")
+file.write(ol)
+file.close()
 
 dist_matrix = [[] for x in range(len(origin_dict))]
 time_matrix = [[] for x in range(len(origin_dict))]

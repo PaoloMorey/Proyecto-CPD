@@ -4,6 +4,10 @@ run:
 	g++ -fopenmp main.cpp -o tsp.out 
 	./tsp.out
 
+runsec:
+	g++ -fopenmp main.cpp -D sec -o tsp.out 
+	./tsp.out
+
 vivopar:
 	python3 maps.py
 	g++ -fopenmp live.cpp -o live.out
@@ -14,6 +18,6 @@ vivosec:
 	g++ live.cpp -D sec -o live.out
 	./live.out
 clean:
-	rm -f *.bin *.txt *.blif *.out *~
+	rm -f *.out *~ *json
 
 .PHONY: all clean

@@ -51,6 +51,16 @@ int main() {
     while (std::getline(cities_file, line)) {
         cities.push_back(line);
     }
+    // read from matrix/names.txt
+    std::ifstream names_file("matrix/names.txt");
+    if (!names_file.is_open()) {
+        std::cout << "Error opening file\n";
+        return 1;
+    }
+    std::vector<std::string> names;
+    while (std::getline(names_file, line)) {
+        names.push_back(line);
+    }
 
     // utils::print_matrix(dist_m);
     // utils::print_matrix(time_m);
@@ -64,6 +74,7 @@ int main() {
     }
     std::vector<matrix> matrices{dist_m, time_m, suma_m};
     std::vector<std::string> ids{"dist", "time", "suma"};
+    std::cout << "\n";
     for (int i = 0; i < matrices.size(); i++) {
 #ifndef sec
         auto start = omp_get_wtime();
@@ -81,17 +92,29 @@ int main() {
         auto elapsed = finish - start;
         std::cout << "MATRIZ " << ids[i] << "\n";
         std::cout << "Elapsed time: " << elapsed << " s\n";
-        for (int i : a.get_path()) std::cout << cities[i] << "\t";
+        auto best_path = a.get_path();
+        for (int z = 0; z < best_path.size(); z++) {
+            if (z == best_path.size() - 1)
+                std::cout << cities[best_path[z]] << "\n";
+            else
+                std::cout << cities[best_path[z]] << " --> ";
+        }
+        for (int z = 0; z < best_path.size(); z++) {
+            if (z == best_path.size() - 1)
+                std::cout << names[best_path[z]] << "\n";
+            else
+                std::cout << names[best_path[z]] << " --> ";
+        }
         std::cout << "\nMinimum ";
         if (ids[i] == "dist") {
             std::cout << "distance: ";
-            std::cout << a.get_cost() / 1000 << "km\n";
+            std::cout << a.get_cost() / 1000 << " km\n";
         } else if (ids[i] == "time") {
             std::cout << "time: ";
-            std::cout << a.get_cost() / 60 << "min\n";
+            std::cout << a.get_cost() / 60 << " min\n";
         } else {
             std::cout << "cost: ";
-            std::cout << a.get_cost() << "(m + s)\n";
+            std::cout << a.get_cost() << " (m + s)\n";
         }
         std::cout << "\n";
     }
