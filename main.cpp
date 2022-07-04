@@ -12,22 +12,10 @@ int main() {
     auto start = utils::cpu_time();
 #endif
     vector best_path;
-    number best_cost = INF;
-    std::vector<std::pair<vector, number>> best_pc;
-    int j = 0;
-#pragma omp parallel for private(j) schedule(dynamic)
-    for (j = 0; j < adj.size(); ++j) {
-        TSP a;
-        a.run(adj, j);
-#pragma omp critical
-        best_pc.push_back({a.get_path(), a.get_cost()});
-    }
-    for (auto &i : best_pc) {
-        if (i.second < best_cost) {
-            best_cost = i.second;
-            best_path = i.first;
-        }
-    }
+
+    TSP a;
+    a.run(adj);
+    number best_cost = a.get_cost();
 
 #ifndef sec
     auto finish = omp_get_wtime();
